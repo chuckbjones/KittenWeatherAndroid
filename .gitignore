@@ -1,0 +1,11 @@
+.gradle
+/local.properties
+.DS_Store
+/build
+/captures
+
+# Android Studio project files.
+# https://www.gitignore.io/api/android,intellij,osx,windows,linux,gradle,java
+# https://code.google.com/p/android/issues/detail?id=156708#c6
+.idea/
+*.iml
