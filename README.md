@@ -47,8 +47,53 @@ See that project for details on the techniques used.
          assertThat(difference, is(lessThan(MATCHING_TOLERANCE)));
      }
 
-## TODO: Monkey
- *Should be able to use the Android Monkey tool as an analog to UIAutoMonkey for iOS.*
+## Monkey
+Android's [UI/Application Exerciser Monkey](http://developer.android.com/tools/help/monkey.html) tool is an analog to UIAutoMonkey for iOS.
+
+Because it generates completely random touch, keypress, and button events, the monkey can cause some havoc on your device. It has even been know to [take occasional screenshots and randomly start playing music on its own](http://www.everybodytests.com/2014/08/why-is-android-monkey-so-naughty.html).
+
+So, it's a good idea to disable system events (eg. pressing the power or volume buttons) and special keypress event. This is done by setting the frequency of those events to 0 using monkey's command line options. 
+
+If you are running Lollipop or higher, you can also [pin](https://support.google.com/nexus/answer/6118421?hl=en) the application under test to prevent monkey from escaping from your app and changing your Wi-Fi settings, etc.
+
+### Unleash the Monkey
+The monkey lives on your device (or emulator). To set him loose, you will need [adb](http://developer.android.com/tools/help/adb.html) installed and in your path. If using Android Studio, `adb` will most likely be installed under `~/Library/Android/sdk/platform-tools/adb` (OS X).
+
+Connect your device and run monkey via `adb shell` from the terminal:
+
+    adb shell monkey -v -p com.chuckbjones.kittenweather \
+        --pct-touch 70 \
+        --pct-motion 10 \
+        --pct-trackball 6 \
+        --pct-nav 6 \
+        --pct-majornav 5 \
+        --pct-rotation 1 \
+        --pct-pinchzoom 1 \
+        --pct-flip 1 \
+        --pct-anyevent 0 \
+        --pct-syskeys 0 \
+        --pct-appswitch 0 \
+        2000
+
+Here, we are specifying the frequencies of each event type as percentages. If specifying a number for each type, they must add up to 100. If any are omitted, their respective default is used, adjusted in relation to the numbers provided so that they all add up to 100%.
+
+Here are the default frequencies pulled from the [source code](https://android.googlesource.com/platform/development.git/+/master/cmds/monkey/src/com/android/commands/monkey/MonkeySourceRandom.java):
+
+    mFactors[FACTOR_TOUCH] = 15.0f;
+    mFactors[FACTOR_MOTION] = 10.0f;
+    mFactors[FACTOR_TRACKBALL] = 15.0f;
+    mFactors[FACTOR_ROTATION] = 0.0f;
+    mFactors[FACTOR_NAV] = 25.0f;
+    mFactors[FACTOR_MAJORNAV] = 15.0f;
+    mFactors[FACTOR_SYSOPS] = 2.0f;
+    mFactors[FACTOR_APPSWITCH] = 2.0f;
+    mFactors[FACTOR_FLIP] = 1.0f;
+    mFactors[FACTOR_ANYTHING] = 13.0f;
+    mFactors[FACTOR_PINCHZOOM] = 2.0f;
+
+Note that there are a number of options that are not listed in the tool's documentation. I haven't begun to explore [all of them](https://android.googlesource.com/platform/development.git/+/master/cmds/monkey/src/com/android/commands/monkey/Monkey.java), but one of note is `--pct-rotation`. This option has a default frequency of 0%, meaning you must specify it if you want the monkey to test orientation changes, a common source of crashiness in Android apps. 
+
+The 2000 at the end of the command is the number of events to trigger. It doesn't have a switch associated with it, so it must appear last in the command.
 
 ## TODO: MonkeyImage
  *I think we can use the MonkeyImage class with the Android monkeyrunner tool as an analog to FBSnapshotTestCase for iOS.*
