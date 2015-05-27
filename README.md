@@ -20,7 +20,7 @@ See that project for details on the techniques used.
  * ButterKnife - http://jakewharton.github.io/butterknife
  * Retrofit - http://square.github.io/retrofit
  * Picasso - http://square.github.io/picasso
- * com.melnykov:floatingactionbutton
+ * FloatingActionButton - https://github.com/makovkastar/FloatingActionButton
  * JUnit - http://junit.org/
  * Hamcrest - http://hamcrest.org/
  * junit-quickcheck - https://github.com/pholser/junit-quickcheck
