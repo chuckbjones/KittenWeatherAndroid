@@ -10,7 +10,7 @@ public class KittenWeatherApp extends Application {
     @Override public void onCreate() {
         super.onCreate();
 
-        graph = ObjectGraph.create(new AndroidModule());
+        graph = ObjectGraph.create(Modules.list());
     }
 
     public void inject(Object object) {
